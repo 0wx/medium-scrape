@@ -1,6 +1,6 @@
 {
   "name": "medium-scrape",
-  "version": "1.0.1-rc",
+  "version": "1.0.1-rc1",
   "description": "Scraper for Medium.com posts",
   "main": "index.js",
   "scripts": {
