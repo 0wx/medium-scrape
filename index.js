@@ -7,27 +7,27 @@ module.exports = async (link, config) => {
     let { data } = response;
     let $ = cheerio.load(data);
 
-    let a = $('a').map((x) => {
-      return x;
-    }).prevObject;
+    // let a = $('a').map((x) => {
+    //   return x;
+    // }).prevObject;
 
-    let _profile = (a) => {
-      let _data =
-        a[
-          Object.keys(a)
-            .filter(Number)
-            .filter((x) => a[x.toString()].attribs.rel == 'noopener')[2]
-        ];
-      let res = {
-        name: _data.children[0].attribs.alt,
-        username: _data.attribs.href.replace(/\/(@.+)\?.+/, '$1'),
-        thumb: _data.children[0].attribs.src,
-        url: `https://medium.com${_data.attribs.href.split('?')[0]}`,
-      };
-      return res;
-    };
+    // let _profile = (a) => {
+    //   let _data =
+    //     a[
+    //       Object.keys(a)
+    //         .filter(Number)
+    //         .filter((x) => a[x.toString()].attribs.rel == 'noopener')[2]
+    //     ];
+    //   let res = {
+    //     name: _data.children[0].attribs.alt,
+    //     username: _data.attribs.href.replace(/\/(@.+)\?.+/, '$1'),
+    //     thumb: _data.children[0].attribs.src,
+    //     url: `https://medium.com${_data.attribs.href.split('?')[0]}`,
+    //   };
+    //   return res;
+    // };
 
-    let author = _profile(a);
+    // let author = _profile(a);
 
     let _section = $('article').find('div')['0'].children[1].children[0]
       .children[0].attribs.class;
@@ -82,7 +82,7 @@ module.exports = async (link, config) => {
                 .replace(/ sizes="[a-z0-9]+"/g, '')
                 .replace(/ width="[a-z0-9]+"/g, '')
                 .replace(/ height="[a-z0-9]+"/g, '');
-            if(config.img){
+            if(config && config.img){
                 Object.keys(config.img).forEach(x => {
                     html = html.replace(/<img/g, `<img ${x}="${config.img[x]}"`)
                 })
@@ -94,7 +94,7 @@ module.exports = async (link, config) => {
         let tag = (a) => {
             let name = a.name;
             if(name == 'figure') return name;
-            if(config[name]){
+            if(config && config[name]){
                 Object.keys(config[name]).forEach(x => {
                     name += ` ${x}="${config[name][x]}"`
                 });
@@ -118,7 +118,12 @@ module.exports = async (link, config) => {
 
     return {
       title: $('#' + $('h1')[0].attribs.id).text(),
-      author,
+      author: {
+        name: $('h1')[0].next.children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].data,
+        username: $('h1')[0].next.children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].attribs.href.split('?')[0].replace('/', ''),
+        thumb: $('h1')[0].next.children[0].children[0].children[0].children[0].children[0].attribs.src,
+        url: 'https://medium.com' + $('h1')[0].next.children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].attribs.href.split('?')[0],
+      },
       body: _b.data,
     };
   } catch (error) {
