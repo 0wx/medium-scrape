@@ -1,34 +1,13 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-module.exports = async (link, config) => {
+module.exports.get = async (link, config) => {
   try {
     let response = await axios.get(link);
     let { data } = response;
     let $ = cheerio.load(data);
 
-    // let a = $('a').map((x) => {
-    //   return x;
-    // }).prevObject;
-
-    // let _profile = (a) => {
-    //   let _data =
-    //     a[
-    //       Object.keys(a)
-    //         .filter(Number)
-    //         .filter((x) => a[x.toString()].attribs.rel == 'noopener')[2]
-    //     ];
-    //   let res = {
-    //     name: _data.children[0].attribs.alt,
-    //     username: _data.attribs.href.replace(/\/(@.+)\?.+/, '$1'),
-    //     thumb: _data.children[0].attribs.src,
-    //     url: `https://medium.com${_data.attribs.href.split('?')[0]}`,
-    //   };
-    //   return res;
-    // };
-
-    // let author = _profile(a);
-
+    
     let _section = $('article').find('div')['0'].children[1].children[0]
       .children[0].attribs.class;
     let section =

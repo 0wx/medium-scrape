@@ -15,7 +15,7 @@ const link = 'https://medium.com/@nickgrego/step-by-step-guide-for-installing-bo
 
 (async() => {
     try {
-        let post = await medium(link);
+        let post = await medium.get(link);
         console.log(post);
     } catch (e) {
         console.error(e);
@@ -53,7 +53,7 @@ const link = 'https://medium.com/@nickgrego/step-by-step-guide-for-installing-bo
 
 (async() => {
     try {
-        let post = await medium(link, {
+        let post = await medium.get(link, {
             p: {
                 class: 'awsome class',
             },
