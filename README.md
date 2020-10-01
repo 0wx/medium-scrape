@@ -2,14 +2,14 @@
 A simple medium.com post scraper using Axios, and Cheerio.
 
 ### Install
-```
-npm i --save medium-scraper
+```bash
+npm i --save medium-scrape
 ```
 
 ### Usage
 Script:
 ```JavaScript
-const medium = require('medium-scraper');
+const medium = require('medium-scrape');
 const link = 'https://medium.com/@nickgrego/step-by-step-guide-for-installing-both-ecdsa-beacon-nodes-on-vps-with-100-voucher-db930ab2a667';
 
 
@@ -47,7 +47,7 @@ Output:
 ### You can also append attribute class, id, width, height, etc. to the tag
 Script:
 ```JavaScript
-const medium = require('medium-scraper');
+const medium = require('medium-scrape');
 const link = 'https://medium.com/@nickgrego/step-by-step-guide-for-installing-both-ecdsa-beacon-nodes-on-vps-with-100-voucher-db930ab2a667';
 
 
