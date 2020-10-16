@@ -1,6 +1,6 @@
 {
   "name": "medium-scrape",
-  "version": "0.0.1-rc",
+  "version": "0.0.1-rc1",
   "description": "Scraper for Medium.com posts",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,8 @@
   "homepage": "https://github.com/0wx/medium-scrape#readme",
   "dependencies": {
     "axios": "^0.20.0",
-    "cheerio": "^1.0.0-rc.3"
+    "cheerio": "^1.0.0-rc.3",
+    "turndown": "^7.0.0"
   },
   "devDependencies": {}
 }

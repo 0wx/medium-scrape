@@ -1,13 +1,12 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-
-module.exports.get = async (link, config) => {
+const TurndownService = require('turndown');
+const get = async (link, config) => {
   try {
     let response = await axios.get(link);
     let { data } = response;
     let $ = cheerio.load(data);
 
-    
     let _section = $('article').find('div')['0'].children[1].children[0]
       .children[0].attribs.class;
     let section =
@@ -56,32 +55,32 @@ module.exports.get = async (link, config) => {
           .replace(/  /g, ' ')
           .replace(/ >/g, '>');
         let html;
-         if(a.name == 'figure'){
-            html = rawHTML
-                .replace(/ sizes="[a-z0-9]+"/g, '')
-                .replace(/ width="[a-z0-9]+"/g, '')
-                .replace(/ height="[a-z0-9]+"/g, '');
-            if(config && config.img){
-                Object.keys(config.img).forEach(x => {
-                    html = html.replace(/<img/g, `<img ${x}="${config.img[x]}"`)
-                })
-            }
-          } else {
-            html = rawHTML;
-          } 
+        if (a.name == 'figure') {
+          html = rawHTML
+            .replace(/ sizes="[a-z0-9]+"/g, '')
+            .replace(/ width="[a-z0-9]+"/g, '')
+            .replace(/ height="[a-z0-9]+"/g, '');
+          if (config && config.img) {
+            Object.keys(config.img).forEach((x) => {
+              html = html.replace(/<img/g, `<img ${x}="${config.img[x]}"`);
+            });
+          }
+        } else {
+          html = rawHTML;
+        }
 
         let tag = (a) => {
-            let name = a.name;
-            if(name == 'figure') return name;
-            if(config && config[name]){
-                Object.keys(config[name]).forEach(x => {
-                    name += ` ${x}="${config[name][x]}"`
-                });
-                return name;
-            } else {
-                return name;
-            }
-        }
+          let name = a.name;
+          if (name == 'figure') return name;
+          if (config && config[name]) {
+            Object.keys(config[name]).forEach((x) => {
+              name += ` ${x}="${config[name][x]}"`;
+            });
+            return name;
+          } else {
+            return name;
+          }
+        };
         data.push(`<${tag(a)}>${html}</${a.name}>`);
         count++;
         if (!!a.next) {
@@ -97,15 +96,21 @@ module.exports.get = async (link, config) => {
 
     return {
       title: $('#' + $('h1')[0].attribs.id).text(),
-      author: {
-        name: $('h1')[0].next.children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].data,
-        username: $('h1')[0].next.children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].attribs.href.split('?')[0].replace('/', ''),
-        thumb: $('h1')[0].next.children[0].children[0].children[0].children[0].children[0].attribs.src,
-        url: 'https://medium.com' + $('h1')[0].next.children[0].children[0].children[1].children[0].children[0].children[0].children[0].children[0].children[0].attribs.href.split('?')[0],
-      },
       body: _b.data,
     };
   } catch (error) {
     throw new Error(error);
   }
+};
+
+const md = async (link) => {
+  let { title, body } = await get(link);
+  let turndownService = new TurndownService();
+  let markdown = turndownService.turndown(body.join(''));
+  return { title, body: markdown };
+};
+
+module.exports = {
+  get,
+  md,
 };
